@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduConnect – Student Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy: #0f1f3d;
+      --gold: #e8a020;
+      --gold-light: #f5c96a;
+      --cream: #faf7f2;
+      --white: #ffffff;
+      --gray: #6b7280;
+      --light-gray: #f0ede8;
+      --green: #1a7a4a;
+      --red: #c0392b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--navy);
+      min-height: 100vh;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      background: var(--navy);
+      padding: 0 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.25);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--gold);
+      letter-spacing: 0.02em;
+    }
+
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a {
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold-light); }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: white;
+      font-size: 0.88rem;
+    }
+    .avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--navy);
+    }
+
+    /* ── HERO BANNER ── */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 60%, #1a3460 100%);
+      color: white;
+      padding: 2.5rem 2.5rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      right: -80px; top: -80px;
+      width: 340px; height: 340px;
+      border-radius: 50%;
+      background: rgba(232, 160, 32, 0.12);
+    }
+    .hero-inner { max-width: 900px; }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      margin-bottom: 0.4rem;
+    }
+    .hero h1 span { color: var(--gold); }
+    .hero p { color: rgba(255,255,255,0.65); font-size: 0.92rem; }
+
+    /* ── STATS ROW ── */
+    .stats-row {
+      display: flex; gap: 1rem;
+      padding: 1.25rem 2.5rem;
+      background: var(--white);
+      border-bottom: 1px solid #e5ddd0;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      flex: 1; min-width: 140px;
+      display: flex; align-items: center; gap: 0.85rem;
+      padding: 0.85rem 1rem;
+      background: var(--cream);
+      border-radius: 10px;
+      border: 1px solid #e5ddd0;
+      transition: transform 0.15s;
+    }
+    .stat-card:hover { transform: translateY(-2px); }
+    .stat-icon {
+      font-size: 1.6rem;
+    }
+    .stat-label { font-size: 0.72rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-value { font-size: 1.25rem; font-weight: 600; color: var(--navy); }
+
+    /* ── MAIN LAYOUT ── */
+    .main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 2.5rem 3rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+    }
+
+    /* ── SECTION TITLES ── */
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--navy);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--gold);
+      display: inline-block;
+    }
+
+    /* ── COURSES TABLE ── */
+    .courses-card {
+      background: white;
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 14px rgba(15,31,61,0.07);
+      border: 1px solid #e5ddd0;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      background: var(--navy);
+      color: white;
+      padding: 0.65rem 1rem;
+      text-align: left;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    thead th:first-child { border-radius: 8px 0 0 0; }
+    thead th:last-child { border-radius: 0 8px 0 0; }
+    tbody tr { transition: background 0.15s; }
+    tbody tr:hover { background: #faf7f2; }
+    tbody td {
+      padding: 0.75rem 1rem;
+      font-size: 0.88rem;
+      border-bottom: 1px solid #f0ede8;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.65rem;
+      border-radius: 20px;
+      font-size: 0.73rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    .badge-green { background: #d1fae5; color: #065f46; }
+    .badge-gold  { background: #fef3c7; color: #92400e; }
+    .badge-blue  { background: #dbeafe; color: #1e40af; }
+
+    .grade { font-weight: 700; }
+    .grade-a { color: var(--green); }
+    .grade-b { color: #2563eb; }
+    .grade-c { color: var(--gold); }
+
+    /* ── SIDEBAR ── */
+    .sidebar { display: flex; flex-direction: column; gap: 1.25rem; }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 1.25rem;
+      box-shadow: 0 2px 14px rgba(15,31,61,0.07);
+      border: 1px solid #e5ddd0;
+    }
+
+    /* Upcoming events */
+    .event-item {
+      display: flex; gap: 0.75rem; align-items: flex-start;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #f0ede8;
+    }
+    .event-item:last-child { border-bottom: none; }
+    .event-date {
+      min-width: 42px;
+      text-align: center;
+      background: var(--navy);
+      color: white;
+      border-radius: 8px;
+      padding: 0.3rem 0.4rem;
+      font-size: 0.7rem;
+      line-height: 1.3;
+    }
+    .event-date strong { display: block; font-size: 1.1rem; }
+    .event-name { font-size: 0.85rem; font-weight: 500; }
+    .event-meta { font-size: 0.75rem; color: var(--gray); }
+
+    /* GPA Progress */
+    .gpa-display {
+      text-align: center;
+      padding: 0.5rem 0 1rem;
+    }
+    .gpa-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      color: var(--navy);
+      line-height: 1;
+    }
+    .gpa-sub { font-size: 0.8rem; color: var(--gray); margin-top: 0.25rem; }
+    .progress-bar-wrap {
+      background: var(--light-gray);
+      border-radius: 20px;
+      height: 10px;
+      margin-top: 0.75rem;
+    }
+    .progress-bar-fill {
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      height: 100%;
+      border-radius: 20px;
+      width: 82%;
+    }
+
+    /* Notifications */
+    .notif {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid #f0ede8;
+      font-size: 0.83rem;
+    }
+    .notif:last-child { border-bottom: none; }
+    .notif-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 1.2rem;
+      font-size: 0.78rem;
+      color: var(--gray);
+      border-top: 1px solid #e5ddd0;
+      background: white;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .courses-card, .card { animation: fadeUp 0.4s ease both; }
+    .courses-card { animation-delay: 0.05s; }
+    .sidebar .card:nth-child(1) { animation-delay: 0.1s; }
+    .sidebar .card:nth-child(2) { animation-delay: 0.17s; }
+    .sidebar .card:nth-child(3) { animation-delay: 0.24s; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-logo">EduConnect</div>
+  <div class="nav-links">
+    <a href="#" class="active">Dashboard</a>
+    <a href="#">Courses</a>
+    <a href="#">Grades</a>
+    <a href="#">Schedule</a>
+    <a href="#">Resources</a>
+  </div>
+  <div class="nav-user">
+    <div class="avatar">Z</div>
+    <span>ZAINU</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Good morning, <span>ZAINU</span></h1>
+    <p>Semester 6 — Spring 2026 &nbsp;|&nbsp; BS Computer Software Engineering</p>
+  </div>
+</div>
+
+<!-- STATS ROW -->
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-icon">📚</div>
+    <div>
+      <div class="stat-label">Enrolled Courses</div>
+      <div class="stat-value">6</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">⭐</div>
+    <div>
+      <div class="stat-label">Current GPA</div>
+      <div class="stat-value">3.28</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">✅</div>
+    <div>
+      <div class="stat-label">Attendance</div>
+      <div class="stat-value">87%</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">📝</div>
+    <div>
+      <div class="stat-label">Pending Tasks</div>
+      <div class="stat-value">4</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">🎓</div>
+    <div>
+      <div class="stat-label">Credit Hours</div>
+      <div class="stat-value">18</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <!-- LEFT: COURSES TABLE -->
+  <div>
+    <div class="courses-card">
+      <div class="section-title">Enrolled Courses</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Course</th>
+            <th>Instructor</th>
+            <th>Status</th>
+            <th>Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>SE-401 Human Computer Interaction</strong></td>
+            <td>Dr. Farrukh</td>
+            <td><span class="badge badge-green">Active</span></td>
+            <td><span class="grade grade-a">A</span></td>
+          </tr>
+          <tr>
+            <td><strong>SE-403 Software Design</strong></td>
+            <td>Prof. Imtiaz</td>
+            <td><span class="badge badge-green">Active</span></td>
+            <td><span class="grade grade-b">B+</span></td>
+          </tr>
+          <tr>
+            <td><strong>CS-411 Database Systems</strong></td>
+            <td>Dr. Sana</td>
+            <td><span class="badge badge-green">Active</span></td>
+            <td><span class="grade grade-a">A-</span></td>
+          </tr>
+          <tr>
+            <td><strong>CS-421 Computer Networks</strong></td>
+            <td>Prof. Bilal</td>
+            <td><span class="badge badge-gold">Mid Exam</span></td>
+            <td><span class="grade grade-b">B</span></td>
+          </tr>
+          <tr>
+            <td><strong>SE-405 Software Testing</strong></td>
+            <td>Dr. Nadia</td>
+            <td><span class="badge badge-blue">Lab Session</span></td>
+            <td><span class="grade grade-c">B-</span></td>
+          </tr>
+          <tr>
+            <td><strong>CS-431 Operating Systems</strong></td>
+            <td>Prof. Tariq</td>
+            <td><span class="badge badge-green">Active</span></td>
+            <td><span class="grade grade-b">B+</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RIGHT: SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- GPA Card -->
+    <div class="card">
+      <div class="section-title">Semester GPA</div>
+      <div class="gpa-display">
+        <div class="gpa-number">3.28</div>
+        <div class="gpa-sub">out of 4.0 &nbsp;·&nbsp; Good Standing</div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Events -->
+    <div class="card">
+      <div class="section-title">Upcoming Deadlines</div>
+      <div class="event-item">
+        <div class="event-date"><strong>11</strong>MAR</div>
+        <div>
+          <div class="event-name">HCI Assignment #02 Due</div>
+          <div class="event-meta">SE-401 · 11:59 PM</div>
+        </div>
+      </div>
+      <div class="event-item">
+        <div class="event-date"><strong>14</strong>MAR</div>
+        <div>
+          <div class="event-name">Database Mid-Term Exam</div>
+          <div class="event-meta">CS-411 · Hall B, 9:00 AM</div>
+        </div>
+      </div>
+      <div class="event-item">
+        <div class="event-date"><strong>18</strong>MAR</div>
+        <div>
+          <div class="event-name">Networks Lab Report</div>
+          <div class="event-meta">CS-421 · Submit Online</div>
+        </div>
+      </div>
+      <div class="event-item">
+        <div class="event-date"><strong>22</strong>MAR</div>
+        <div>
+          <div class="event-name">Software Design Project</div>
+          <div class="event-meta">SE-403 · Group Submission</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="card">
+      <div class="section-title">Notifications</div>
+      <div class="notif">
+        <div class="notif-dot" style="background:#e8a020;"></div>
+        <span>New grade posted in SE-401</span>
+      </div>
+      <div class="notif">
+        <div class="notif-dot" style="background:#c0392b;"></div>
+        <span>Attendance warning: CS-421 (65%)</span>
+      </div>
+      <div class="notif">
+        <div class="notif-dot" style="background:#1a7a4a;"></div>
+        <span>Lab slot confirmed for SE-405</span>
+      </div>
+      <div class="notif">
+        <div class="notif-dot" style="background:#2563eb;"></div>
+        <span>Fee challan generated for Spring 2026</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  &copy; 2026 EduConnect &nbsp;·&nbsp; University of Engineering &amp; Technology, Mardan &nbsp;·&nbsp; All rights reserved
+</footer>
+
+</body>
+</html>
